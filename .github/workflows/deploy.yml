@@ -17,29 +17,33 @@ jobs:
   deploy-infra:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout Repository
         uses: actions/checkout@v2
-      - name: setup Terraform
+        with:
+          fetch-depth: 0 
+
+      - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
         with:
           terraform_wrapper: false
-      - name: Terraform init
+
+      - name: Terraform Init
         id: init
-        run: terraform init -backend-config="bucket=$TF_STATE_BUCKET_NAME" -backend-config="region=ap-south-1"
-        working-directory: ./terraform
+        run: terraform init -backend-config="bucket=$TF_STATE_BUCKET_NAME" -backend-config="region=$AWS_REGION"
+        working-directory: .
+
       - name: Terraform Plan
         id: plan
-        run: |-
+        run: |
           terraform plan \
-          -var="region=ap-south-1" \
+          -var="region=$AWS_REGION" \
           -var="public_key=$PUBLIC_SSH_KEY" \
           -var="private_key=$PRIVATE_SSH_KEY" \
           -var="key_name=deployer-key" \
           -out=PLAN
-        working-directory: ./terraform
+        working-directory: .
+
       - name: Terraform Apply
         id: apply
-        run: terraform apply PLAN
-        working-directory: ./terraform
-
-
+        run: terraform apply -auto-approve
+        working-directory: .
