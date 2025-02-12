@@ -1,15 +1,20 @@
 variable "region" {
-  default = "ap-south-1"
+  description = "AWS region"
+  type        = string
+  default     = "ap-south-1"
 }
 
 variable "public_key" {
-  default = "your-public-key-content"
+  description = "Public SSH Key"
+  type        = string
 }
 
 variable "private_key" {
-  default = "your-private-key-content"
+  description = "Private SSH Key"
+  type        = string
 }
 
 variable "key_name" {
-  default = "deployer-key"
+  description = "Name of the SSH Key Pair"
+  type        = string
 }
